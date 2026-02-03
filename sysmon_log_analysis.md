@@ -20,7 +20,7 @@
 |crashdump_disabled | No | | <ul><li>Process terminated</li></ul> | |
 |credaccess_reg_query_privesc_token_manip | Yes || <ul><li>Process create</li><li>Process terminated</li></ul> | | 
 |globalflags| Yes || <ul><li>Process created </li><li> Process terminated </li><li> Registry value set</li><li> Registry object added or deleted</li></ul>| CommandLine: taskkill /F /IM netstat.exe The attacker is forcibly (/F) killing netstat, likely to hide their network connections or stop a monitoring tool. |
-|msoffice_dll_image_load| Yes | <ul><li>Process create</li><li>File created</li><li>Process terminated</li></ul>
+|msoffice_dll_image_load| Yes || <ul><li>Process create</li><li>File created</li><li>Process terminated</li></ul>
 |reg_mod_shim_sb|Yes || <ul><li>Process created </li><li> Process terminated </li><li> Registry value set</li><li> Registry object added or deleted</li></ul> | In the log 'Registry object added or deleted', the MITRE ATT&CK technique for Application Shimming is identified 'RuleName: T1138, AppCompatShim'  |
 
 
