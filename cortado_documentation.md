@@ -3,10 +3,13 @@
 This guide provides comprehensive technical details, setup instructions, and operational procedures for working with Cortado RTAS.
 
 ---
+## 1. Motivation
 
-## 1. Introduction to Cortado RTAS
+The goal of this project is to determine if threat detection is achievable without the use of third-party endpoint agents. While dedicated agents provide visibility, they often introduce management overhead and resource constraints. We focus on leveraging native Windows telemetry and Sysmon to identify malicious activity.
 
-### 1.1 What is Cortado RTAs?
+## 2. Introduction to Cortado RTAs
+
+### 2.1 What is Cortado RTAs?
 
 Cortado RTAS is an open-source suite developed by Elastic, designed for testing and analyzing ransomware techniques. 
 
@@ -16,7 +19,7 @@ Cortado supports two main types of RTAs:
 
 Each RTA contains metadata such as ID, name, supported platforms, associated security rules, and MITRE ATT&CK techniques.
 
-### 1.2 Scope of this Document
+### 2.2 Scope of this Document
 
 This documentation covers:
 
@@ -26,11 +29,11 @@ This documentation covers:
 
 ---
 
-## 2. Setting Up Your Cortado RTAS Environment
+## 3. Setting Up Your Cortado RTAS Environment
 
 This section details the technical prerequisites and step-by-step installation process for Cortado RTAS. Official Cortado documentation uses Poetry to install Cortado; this documentation covers installation using `pip`.
 
-### 2.1 Prerequisites
+### 3.1 Prerequisites
 
 Before proceeding, ensure your test environment meets the following requirements:
 
@@ -39,7 +42,7 @@ Before proceeding, ensure your test environment meets the following requirements
 *   **Access & Permissions:**
     *   Administrative rights for running RTAs.
 
-### 2.2 Cortado RTAS Installation Guide
+### 3.2 Cortado RTAS Installation Guide
 
 Follow these steps to install Cortado RTAs:
 
@@ -50,38 +53,11 @@ Follow these steps to install Cortado RTAs:
     pip install cortado-0.1.0-py3-none-any.whl
     ```
 
-#### Insignificant Issues
-
-1.  The Cortado wheel file does not contain some dependencies, so you will receive a similar error when you run `cortado --help`:
-
-    ```bash
-    PS C:\Users\vboxuser\Downloads> cortado --help
-    Traceback (most recent call last):
-    File "<frozen runpy>", line 198, in _run_module_as_main
-    File "<frozen runpy>", line 88, in _run_code
-    File "C:\Users\vboxuser\AppData\Local\Programs\Python\Python313\Scripts\cortado.exe\__main__.py", line 2, in <module>
-    from cortado.cli import run_cli
-    File "C:\Users\vboxuser\AppData\Local\Programs\Python\Python313\Lib\site-packages\cortado\cli.py", line 9, in <module>
-    import structlog
-    ModuleNotFoundError: No module named 'structlog'
-    ```
-
-These scripts are designed to run without any external dependencies beyond what's handled by the Cortado installation itself so the RTAS runs fine despite this message.
-
-#### Installing the Additional Dependencies
-
-1.  Manually install dependencies listed in `pyproject.toml` from the `[tool.poetry.dependencies]` section using `pip`:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
-*It is important to verfiy that all dependencies are available and not conflicting.* 
-
-## 3. Operating RTAs & Analyzing Logs
+## 4. Operating RTAs & Analyzing Logs
 
 The Cortado RTAs CLI provides commands to execute individual or all relevant RTAs in a sandboxed environment with the minimal dependencies.
 
-### 3.1 Key Execution Commands
+### 4.1 Key Execution Commands
 
 Cortado RTAS offers two primary commands for executing RTAs:
 
@@ -90,7 +66,7 @@ Cortado RTAS offers two primary commands for executing RTAs:
 
 
 
-### 3.2 Executing a Specific RTA (`cortado-run-rta`)
+### 4.2 Executing a Specific RTA (`cortado-run-rta`)
 
 To execute a single RTA, you'll typically need to specify the RTA's identifier.
 
@@ -109,7 +85,7 @@ To execute a single RTA, you'll typically need to specify the RTA's identifier.
     ```
 
 
-### 3.3 Executing All Relevant RTAs (`cortado-run-rtas`)
+### 4.3 Executing All Relevant RTAs (`cortado-run-rtas`)
 
 To perform a broad test across all RTAs compatible with your operating system, use the `cortado-run-rtas` command.
 
@@ -124,15 +100,18 @@ cortado-run-rtas
 *   For a detailed summary of the execution outcomes and functional status of each RTA, please refer to the `Windows RTA Summary.md` document.
   
 
-## 4. Analysis Methodology
+## 5. Methodology
 
-Our analysis of Cortado RTAS focused on understanding its execution behavior and the detection capabilities of our monitoring systems, primarily without a dedicated endpoint agent.
 
-### 4.1 RTAs Execution and Initial Assessment
+### 5.1 RTAs Execution and Initial Assessment
 
-We began by executing individual RTAs using `cortado-run-rta` to identify their operational status. This initial phase helped us pinpoint which RTAs executed successfully and which encountered issues such as missing files or broken code. This step was crucial for understanding the baseline functionality of each technique.
+We began by executing individual RTAs using `cortado-run-rta` to identify their operational status. This initial phase helped us pinpoint which RTAs executed successfully and which encountered issues such as missing files or broken code. This step was crucial for understanding the baseline functionality of each technique. 
 
-### 4.2 Detection Validation and Focus on Sysmon
+For a detailed breakdown of which RTAs were functional or encountered issues during testing, please refer to the [Windows RTA Summary](./windows_rta_summary.md) linked in the Appendix.
+
+To ensure an effective evaluation, we sampled 20 RTAs from the total library of 258 Windows-based RTAs. 
+
+### 5.2 Detection Validation and Focus on Sysmon
 
 To validate that the executed RTAs were indeed triggering detection events, we initially utilized Elastic's Endpoint Agent (free version). This confirmed that malicious behaviors were observable by an endpoint security solution.
 
@@ -141,32 +120,31 @@ However, our primary objective was to assess the detection capabilities of our c
 *   **Default Sysmon Configuration:** To establish a baseline of what is detected out-of-the-box.
 *   **SwiftOnSecurity Sysmon Configuration:** To evaluate the enhanced visibility provided by a robust, community-driven configuration.
 
+
+**Technical Scope Note:**
+During our assessment, we identified that certain RTAs are not expected to be caught by standard Sysmon configurations. For example:
+crashdump_disabled: Modifies registry values that require specific Event ID 12/13 monitoring.
+collection_keylog_hook_keystate: Uses low-level Windows API calls (like GetAsyncKeyState()) that operate below the layer Sysmon typically monitors.
+
 In addition to Sysmon, we also reviewed **system, security and application logs** to identify any detections or alerts generated by the operating system's built-in security features during RTA execution.
 
 ---
 
-## 5. Sysmon Analysis Results 
-We sampled around 20 RTAs out of a total of 258 Windows RTAs. Out of the 20 around 4 RTAs could not be detected by Sysmon. Certain RTAs (`crashdump_disabled`, `collection_keylog_hook_keystate`, `collection_keylog_rawinputdevice`) are not triggered by Sysmon because they're designed to test specific endpoint detection rules rather than generate Sysmon events.
-
-**crashdump_disabled**
-This RTA temporarily modifies registry values to disable crash dumps using _common.temp_registry_value() crashdump_disabled.py:29-30 . Registry modifications don't automatically generate Sysmon events unless Sysmon is specifically configured to monitor registry access with Event ID 12 or 13.
-
-**collection_keylog_hook_keystate**
-This RTA uses direct Windows API calls like GetAsyncKeyState() and SetWindowsHookEx() collection_keylog_hook_keystate.py:21-77 . These API calls operate at a level that Sysmon doesn't typically monitor by default. Sysmon focuses on process creation, network connections, file system access, and specific registry operations, but not low level keyboard hooking or direct API state queries.
+## 6. Results 
+Based on the 20 sampled RTAs, our 4 RTAs could not be detected by Sysmon.
 
 
+### 6.1 Default Configuration Results 
 
-### 5.1 Default Configuration Results 
 
-
-### 5.2 SwiftOnSecurity Configuration Results 
+### 6.2 SwiftOnSecurity Configuration Results 
 
 
 ---
 
-## 6. Appendix
+## 7. Appendix
 
-### 6.1 Sysmon Configuration Details
+### 7.1 Sysmon Configuration Details
 
 To get started with Sysmon, you'll first need to download the necessary files:
 
@@ -177,7 +155,7 @@ To get started with Sysmon, you'll first need to download the necessary files:
     - Go to the SwiftOnSecurity GitHub repository: [https://github.com/SwiftOnSecurity/Sysmon-config](https://github.com/SwiftOnSecurity/Sysmon-config)
     - Download the `sysmonconfig-export.xml` file. 
 
-#### 6.1.1 Default Sysmon Configuration
+#### 7.1.1 Default Sysmon Configuration
 
 This method installs Sysmon with its most basic, default settings. 
 
@@ -199,7 +177,7 @@ This method installs Sysmon with its most basic, default settings.
 
     - You'll be prompted to agree to the EULA (End-User License Agreement). Type `yes` and press Enter.
 
-#### 6.1.2 SwiftOnSecurity Sysmon Configuration
+#### 7.1.2 SwiftOnSecurity Sysmon Configuration
 
 1. **Prepare Sysmon and Configuration File:**
     - Ensure you have extracted `Sysmon.zip` (e.g., to `C:\Sysmon`).
@@ -231,3 +209,36 @@ This method installs Sysmon with its most basic, default settings.
             ```bash
             Sysmon64.exe -c sysmonconfig-export.xml
             ```
+
+#### 7.2 Potential Cortado Set Up Issues
+
+1.  The Cortado wheel file does not contain some dependencies, so you will receive a similar error when you run `cortado --help`:
+
+    ```bash
+    PS C:\Users\vboxuser\Downloads> cortado --help
+    Traceback (most recent call last):
+    File "<frozen runpy>", line 198, in _run_module_as_main
+    File "<frozen runpy>", line 88, in _run_code
+    File "C:\Users\vboxuser\AppData\Local\Programs\Python\Python313\Scripts\cortado.exe\__main__.py", line 2, in <module>
+    from cortado.cli import run_cli
+    File "C:\Users\vboxuser\AppData\Local\Programs\Python\Python313\Lib\site-packages\cortado\cli.py", line 9, in <module>
+    import structlog
+    ModuleNotFoundError: No module named 'structlog'
+    ```
+
+These scripts are designed to run without any external dependencies beyond what's handled by the Cortado installation itself so the RTAs runs fine despite this message.
+
+**Installing the Additional Dependencies**
+
+1.  Manually install dependencies listed in `pyproject.toml` from the `[tool.poetry.dependencies]` section using `pip`:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+*It is important to verfiy that all dependencies are available and not conflicting.* 
+
+### 7.3 RTA Functional Status Summary
+[Windows RTA Summary Report](./windows_rta_summary.md)
+
+### 7.4 Sysmon Log Analysis Summary 
+[Sysmon Log Analysis Report](./sysmon_log_analysis.md)
