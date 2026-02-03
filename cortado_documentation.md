@@ -131,7 +131,7 @@ In addition to Sysmon, we also reviewed **system, security and application logs*
 ---
 
 ## 6. Results 
-Based on the 20 sampled RTAs, our 4 RTAs could not be detected by Sysmon.
+Based on the 20 sampled RTAs, 4 RTAs could not be detected by Sysmon.
 
 
 ### 6.1 Default Configuration Results 
