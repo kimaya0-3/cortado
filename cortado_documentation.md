@@ -58,7 +58,7 @@ During the evaluation, a clear hierarchy of visibility emerged between native lo
 
 
 #### 3.1.2 Summary of Detection Capability
-The following table summarizes how the configuration handled key MITRE ATT&CK techniques:
+The following table summarizes how the SwiftOnSecurity configuration handled key MITRE ATT&CK techniques:
 
 | MITRE Technique | RTA Simulation | Key Sysmon Field | Detection Difficulty |
 | :--- | :--- | :--- | :--- |
