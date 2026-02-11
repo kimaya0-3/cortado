@@ -56,17 +56,6 @@ During the evaluation, a clear hierarchy of visibility emerged between native lo
 * **Default Sysmon Configuration:** While the default installation captured a vast amount of data, it proved difficult to operationalize. It logged nearly every system event without categorization, leading to a high volume of "background noise" from standard OS processes. Crucially, the default logs lacked descriptive rule names, making it impossible to quickly map an event to a specific threat technique without manual analysis.
 * **SwiftOnSecurity Configuration:** This configuration resolved the previous issues by filtering out known-benign noise and tagging events with specific rule names. This allowed for immediate identification of the RTA behavior.
 
-
-#### 3.1.2 Summary of Detection Capability
-The following table summarizes how the SwiftOnSecurity configuration handled key MITRE ATT&CK techniques:
-
-| MITRE Technique | RTA Simulation | Key Sysmon Field | Detection Difficulty |
-| :--- | :--- | :--- | :--- |
-| **T1003.002** | Mimikatz SSP | `CommandLine` | **Easy** (Keyword Match) |
-| **T1547.012** | Print Processor | `TargetFilename` | **Moderate** (Path Audit) |
-| **T1490** | Shadow Copy Deletion | `IntegrityLevel` | **Easy** (Privilege Audit) |
-| **T1590.005** | IP Reconnaissance | `QueryName` | **Moderate** (Process Context) |
-
 ---
 
 ## 4. Discussion
@@ -94,7 +83,9 @@ A significant observation occurred during the **network_connection_nslookup** RT
 A recurring pattern across multiple successful detections (including `browser_debugging` and `uac_computerdefaults`) was the use of `C:\Users\Public\` for staging malicious binaries. Because this directory is globally writeable but rarely used by legitimate enterprise applications for execution, any process creation (**Event ID 1**) originating from `C:\Users\Public\` or `C:\Windows\Temp\` should be treated as a high-priority alert.
 
 ### 4.5 Analysis of Detection Gaps
-Certain RTAs, such as `port_monitor` and `crashdump_disabled`, did not produce actionable Sysmon logs. These techniques often involve direct memory manipulation or internal OS flag changes that do not trigger the specific kernel callbacks Sysmon monitors. To mitigate these gaps, supplemental logging such as Windows Event ID 4657 (Registry Value Modified) or ETW (Event Tracing for Windows) providers would be required to gain visibility into kernel-level configuration changes.
+Certain RTAs, such as `port_monitor` and `crashdump_disabled`, did not produce actionable Sysmon logs. These techniques often involve direct memory manipulation or internal OS flag changes that do not trigger the specific kernel callbacks Sysmon monitors. To mitigate these gaps, supplemental logging would be required.
+
+------
 
 ## 5. Appendix
 
