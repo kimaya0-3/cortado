@@ -27,7 +27,7 @@ Each RTA contains metadata such as ID, name, supported platforms, associated sec
 All simulations were conducted within a controlled sandbox environment to ensure safety and consistency.
 
 * **Operating System:** The primary testbed was a standard Windows 2011 (Windows 11) Virtual Machine.
-* **Execution:** We began by executing individual RTAs using cortado-run-rta to identify their operational status. This initial phase helped us pinpoint which RTAs executed successfully and which encountered issues such as missing files or broken code. To ensure an effective evaluation, we sampled 20 RTAs from the total library of 258 Windows-based RTAs. 
+* **Execution:** We began by executing individual RTAs using `cortado-run-rta` to identify their operational status. This initial phase helped us pinpoint which RTAs executed successfully and which encountered issues such as missing files or broken code. To ensure an effective evaluation, we sampled 50 RTAs from the total library of 258 Windows-based RTAs. 
 
 ### 2.3 Detection Validation and Enhanced Telemetry
 To validate that the executed RTAs were triggering detection events, we initially utilized Elastic's Endpoint Agent (free version). However, our primary objective was to assess the detection capabilities of our core infrastructure without relying on a full endpoint agent. Therefore, our main focus shifted to analyzing **Sysmon logs** using two configurations:
