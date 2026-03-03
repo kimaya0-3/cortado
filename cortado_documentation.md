@@ -68,7 +68,7 @@ In the **Sliver C2** and **Mimikatz** simulations, Sysmon captured the full proc
 ![Sysmon Event ID 1 - Mimikatz Simulation](<VirtualBox_Windows 2011_11_02_2026_09_58_23.png>)
 *Figure 1: Sysmon Event ID 1 capturing the execution of a Mimikatz-related command via PowerShell, initiated by the Cortado RTA framework.*
 
-Regarding persistence, the configuration successfully flagged the modification of sensitive registry keys during the **SolarMarker** simulation. Furthermore, it provided direct mapping to **T1547.012** (Print Processor Sideloading) by generating a `FileCreate` (Event ID 11) when an unauthorized `rta.dll` was dropped into the `\spool\drivers\` directory—a location rarely modified by standard users.
+Regarding persistence, the configuration successfully flagged the modification of sensitive registry keys during the **SolarMarker** simulation. Furthermore, it provided direct mapping to **T1547.012** (Print Processor Sideloading) by generating a `FileCreate` (Event ID 11) when an unauthorized `rta.dll` was dropped into the `\spool\drivers\` directory- a location rarely modified by standard users.
 
 ### 4.2 Network Anomalies and C2 Discovery
 The configuration exposed Command & Control (C2) channels by monitoring non-standard process behavior. This was evidenced by flagging automated reconnaissance, such as `powershell.exe` querying `api.ipify.org`. Because this activity originated from a command-line tool rather than a standard web browser, it serves as a high-fidelity indicator of automated discovery.
@@ -262,3 +262,4 @@ This method installs Sysmon with its most basic, default settings.
 
 ### 5.5 Elastic Installation 
 [Link to installation guidelines](https://www.elastic.co/docs/reference/fleet/install-elastic-agents)
+
