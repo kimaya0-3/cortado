@@ -18,6 +18,7 @@ The goal of this project is to determine if robust threat detection is achievabl
 All simulations were conducted within a controlled sandbox environment to ensure safety and consistency.
 
 **Operating System:** The primary testbed was a standard Ubuntu Server 24.04 LTS Virtual Machine.
+
 **Execution:** To ensure an effective evaluation, we sampled 20 RTAs out of the 62 Linux-based RTAS available within Cortado. This targeted sample allowed us to assess a representative set of adversary behaviors relevant to Linux systems.
 
 ---
@@ -51,14 +52,18 @@ Our evaluation demonstrated that a properly configured auditd, especially when l
 The project highlights several compelling strengths of auditd as a standalone telemetry source for Linux threat detection:
 
 **Native Integration and Deep Visibility:** As a kernel-level component, auditd offers unparalleled, deep visibility into system calls and kernel events. This allows for the capture of low-level activities that might be missed or obscured by user-space agents, providing a foundational layer of security monitoring.
+
 **Resource Efficiency:** While log volume can be substantial, auditd itself is generally lightweight in terms of CPU and memory footprint. This makes it an attractive option for environments where resource constraints or the overhead of third-party agents are a concern.
+
 **Customizability:** The rule-based nature of auditd allows for extensive customization. Security teams can tailor detection logic to their specific threat models, compliance requirements, and unique environmental characteristics, providing a highly adaptable security tool.
 
 ### 4.3 Identified Gaps and Limitations
 Despite its strengths, the study also revealed several operational challenges and limitations that must be considered:
 
 **Persistent Background Noise:** While the Neo23x0 ruleset dramatically improved the signal-to-noise ratio compared to a default auditd configuration, a degree of background noise persists. Distinguishing between legitimate, highly privileged administrative actions and malicious activities can still be challenging. Further environmental-specific tuning is often necessary to optimize the ruleset and minimize false positives.
+
 **Log Volume and Storage:** Even with optimized rules, auditd can generate a massive volume of logs. This necessitates robust infrastructure for log aggregation, long-term storage, and efficient processing to prevent data loss and ensure timely analysis.
+
 **Potential Blind Spots:** While auditd provides deep visibility, certain highly sophisticated or memory-resident attacks might still evade detection if they do not trigger specific system calls covered by the ruleset. Continuous research and rule development are essential to address evolving adversary techniques.
 
 ### 4.4 Operational Considerations
