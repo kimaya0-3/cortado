@@ -28,12 +28,12 @@ All simulations were conducted within a controlled sandbox environment to ensure
 ### 3.1 Detection Performance Summary
 
 #### 3.1.1 Statistical Summary of Findings
-After analyzing the sampled RTAs, the following trends were identified regarding the effectiveness of the standalone Sysmon deployment:
+After analyzing the sampled RTAs, the following trends were identified regarding the effectiveness of the standalone auditd deployment:
 
 * **Detection Rate:** **100%** of the sampled RTAs produced high-fidelity logs suitable for immediate detection. 
 
 #### 3.2 Comparative Analysis of Logging Sources
-During the evaluation, a clear hierarchy of visibility emerged between native logging, default Sysmon, and the hardened SwiftOnSecurity configuration:
+During the evaluation, a clear hierarchy of visibility emerged between native logging, default auditd, and the hardened configuration:
 
 **Native Linux Logging (e.g., syslog, journalctl):** Standard system logs proved insufficient for forensic reconstruction of advanced threats. Most RTA actions either left minimal trace or generated generic entries that lacked the granular detail, process lineage, and specific event types necessary to confirm malicious intent or map directly to MITRE ATT&CK techniques.
 
