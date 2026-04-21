@@ -7,18 +7,9 @@
 3. [Installation](#installation)
    - 3a. [Local Installation (Classic OSSEC)](#3a-local-installation-classic-ossec)
    - 3b. [Agent-Server Setup (Classic OSSEC)](#3b-agent-server-setup-classic-ossec)
-4. [Wazuh Migration and Installation](#wazuh-migration-and-installation)
-   - 4a. [Wazuh Installation Steps](#4a-wazuh-installation-steps)
-   - 4b. [Wazuh Access Credentials](#4b-wazuh-access-credentials)
-5. [Verify Installation](#verify-installation)
-6. [Configuration](#configuration)
-7. [Log Monitoring](#log-monitoring)
-8. [Custom Rules](#custom-rules)
-9. [Testing Alerts](#testing-alerts)
-10. [What OSSEC Monitors on This System](#what-ossec-monitors-on-this-system)
-11. [Known Gaps & Limitations](#known-gaps--limitations)
-12. [Recommended Improvements](#recommended-improvements)
-13. [Useful Commands](#useful-commands)
+4. [What OSSEC Monitors on This System](#what-ossec-monitors-on-this-system)
+5. [Known Gaps & Limitations](#known-gaps--limitations)
+6. [Recommended Improvements](#recommended-improvements)
 
 ---
 
