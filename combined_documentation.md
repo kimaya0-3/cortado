@@ -79,7 +79,7 @@ A significant observation occurred during the **network_connection_nslookup** RT
 #### 3.3.4 The "Public" Folder as a Universal Indicator
 A recurring pattern across multiple successful detections (including `browser_debugging` and `uac_computerdefaults`) was the use of `C:\Users\Public\` for staging malicious binaries. Because this directory is globally writeable but rarely used by legitimate enterprise applications for execution, any process creation (**Event ID 1**) originating from `C:\Users\Public\` or `C:\Windows\Temp\` should be treated as a high-priority alert.
 
-##### 3.3.5 Analysis of Detection Gaps
+#### 3.3.5 Analysis of Detection Gaps
 Certain RTAs, such as `port_monitor` and `crashdump_disabled`, did not produce actionable Sysmon logs. These techniques often involve direct memory manipulation or internal OS flag changes that do not trigger the specific kernel callbacks Sysmon monitors. To mitigate these gaps, supplemental logging would be required.
 
 ### 3.4 Comparative Analysis of Logging Sources 
