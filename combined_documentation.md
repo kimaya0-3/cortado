@@ -82,7 +82,7 @@ A recurring pattern across multiple successful detections (including `browser_de
 ##### 3.2.2.5 Analysis of Detection Gaps
 Certain RTAs, such as `port_monitor` and `crashdump_disabled`, did not produce actionable Sysmon logs. These techniques often involve direct memory manipulation or internal OS flag changes that do not trigger the specific kernel callbacks Sysmon monitors. To mitigate these gaps, supplemental logging would be required.
 
-#### 3.2.3 Comparative Analysis of Logging Sources 
+### 3.3 Comparative Analysis of Logging Sources 
 
 *   **Native Windows Logging:** Standard event logs proved insufficient for forensic reconstruction. Most RTA actions either left no trace or were buried in generic "Success" audits that lacked the process command-line arguments and file hashes necessary to confirm malicious intent.
 *   **Default Sysmon Configuration:** While the default installation captured a vast amount of data, it was difficult to operationalize. It logged nearly every system event without categorization, leading to a high volume of "background noise" from standard OS processes (200-300 MB per day on the system, with 75-85% irrelevant). Crucially, default logs lacked descriptive rule names, making it impossible to quickly map an event to a specific threat technique without manual analysis.
