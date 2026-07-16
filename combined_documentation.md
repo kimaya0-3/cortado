@@ -55,11 +55,11 @@ A well-tuned Sysmon deployment achieved an 80% detection rate across sampled MIT
 *   **Masquerading Detection:** In 100% of cases where an attacker renamed a binary (e.g., renaming a C2 agent to `winword.exe`), Sysmon successfully identified the deception via the `OriginalFileName` field.
 *   **LotL Visibility:** The configuration was highly effective at flagging the abuse of legitimate Windows tools like `certutil.exe`, `nslookup.exe`, and `vssadmin.exe`.
 
-#### 3.2.2 Discussion
+### 3.3 Discussion
 
 The telemetry generated during the simulations provides a highly actionable framework for detection engineering. The following sections analyze the specific forensic evidence captured during the RTA executions and the inherent trade-offs in defensive configurations.
 
-##### 3.2.2.1 Forensic Analysis of Execution and Persistence
+#### 3.3.1 Forensic Analysis of Execution and Persistence
 In the **Sliver C2** and **Mimikatz** simulations, Sysmon captured the full process lineage, including `ParentCommandLine` and `Hashes`. This allowed us to trace malicious activity back to the source, identifying that the commands originated from a Python-based RTA engine. This level of detail is critical for distinguishing between legitimate administrative scripts and automated attack frameworks.
 
 ![Sysmon Event ID 1 - Mimikatz Simulation](<VirtualBox_Windows 2011_11_02_2026_09_58_23.png>)
@@ -67,22 +67,22 @@ In the **Sliver C2** and **Mimikatz** simulations, Sysmon captured the full proc
 
 Regarding persistence, the configuration successfully flagged the modification of sensitive registry keys during the **SolarMarker** simulation. Furthermore, it provided direct mapping to **T1547.012** (Print Processor Sideloading) by generating a `FileCreate` (Event ID 11) when an unauthorized `rta.dll` was dropped into the `\spool\drivers\` directory- a location rarely modified by standard users.
 
-##### 3.2.2.2 Network Anomalies and C2 Discovery
+#### 3.3.2 Network Anomalies and C2 Discovery
 The configuration exposed Command & Control (C2) channels by monitoring non-standard process behavior. This was evidenced by flagging automated reconnaissance, such as `powershell.exe` querying `api.ipify.org`. Because this activity originated from a command-line tool rather than a standard web browser, it serves as a high-fidelity indicator of automated discovery.
 
-##### 3.2.2.3 Technical Gap: The `nslookup` DNS Logging "Miss"
+#### 3.3.3 Technical Gap: The `nslookup` DNS Logging "Miss"
 A significant observation occurred during the **network_connection_nslookup** RTA. While Sysmon successfully recorded the **Process Creation (Event ID 1)** for `nslookup.exe`, it failed to generate a **DNS Query (Event ID 22)**.
 
 * **The Reason:** The SwiftOnSecurity configuration is optimized for "High Fidelity" to reduce log volume. Because `nslookup` is a standard tool used frequently by IT administrators for troubleshooting, it is often explicitly excluded from DNS Query logging to prevent "noise."
 * **The Risk:** This exclusion creates a blind spot. An attacker can leverage `nslookup` for **DNS Tunneling** or data exfiltration, remaining invisible to DNS-specific monitoring rules because the tool is "trusted" by the configuration. This highlights the need for behavioral monitoring (analyzing *why* the tool is running) rather than relying solely on individual event triggers.
 
-##### 3.2.2.4 The "Public" Folder as a Universal Indicator
+#### 3.3.4 The "Public" Folder as a Universal Indicator
 A recurring pattern across multiple successful detections (including `browser_debugging` and `uac_computerdefaults`) was the use of `C:\Users\Public\` for staging malicious binaries. Because this directory is globally writeable but rarely used by legitimate enterprise applications for execution, any process creation (**Event ID 1**) originating from `C:\Users\Public\` or `C:\Windows\Temp\` should be treated as a high-priority alert.
 
-##### 3.2.2.5 Analysis of Detection Gaps
+##### 3.3.5 Analysis of Detection Gaps
 Certain RTAs, such as `port_monitor` and `crashdump_disabled`, did not produce actionable Sysmon logs. These techniques often involve direct memory manipulation or internal OS flag changes that do not trigger the specific kernel callbacks Sysmon monitors. To mitigate these gaps, supplemental logging would be required.
 
-### 3.3 Comparative Analysis of Logging Sources 
+### 3.4 Comparative Analysis of Logging Sources 
 
 *   **Native Windows Logging:** Standard event logs proved insufficient for forensic reconstruction. Most RTA actions either left no trace or were buried in generic "Success" audits that lacked the process command-line arguments and file hashes necessary to confirm malicious intent.
 *   **Default Sysmon Configuration:** While the default installation captured a vast amount of data, it was difficult to operationalize. It logged nearly every system event without categorization, leading to a high volume of "background noise" from standard OS processes (200-300 MB per day on the system, with 75-85% irrelevant). Crucially, default logs lacked descriptive rule names, making it impossible to quickly map an event to a specific threat technique without manual analysis.
